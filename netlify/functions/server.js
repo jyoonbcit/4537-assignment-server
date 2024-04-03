@@ -17,6 +17,7 @@ async function query(data) {
 export default async (req, res) => {
 	// Allow origin all
 	const headers = {
+		// TODO: Change origin to client domain
 		'Access-Control-Allow-Origin': '*',
 		'Access-Control-Allow-Methods': 'OPTIONS, GET',
 		'Access-Control-Allow-Headers': 'Content-Type',
@@ -34,6 +35,7 @@ export default async (req, res) => {
     if (req.method === 'GET') {
         try {
             const data = await query({ // Await the result of the query function
+				// TODO: Change inputs to req.query.text
                 "inputs": "Hello, how are you?"
             });
 			return new Response(
