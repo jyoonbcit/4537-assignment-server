@@ -37,7 +37,7 @@ export default async (req, res) => {
                 "inputs": "Hello, how are you?"
             });
 			return new Response(
-				JSON.stringify(data[0].generated_text), 
+				JSON.stringify(data), 
 				{
 					status: 200,
 					headers: new Headers(headers)
