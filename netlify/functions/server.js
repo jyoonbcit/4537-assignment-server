@@ -36,18 +36,18 @@ export default async (req, res) => {
             const data = await query({ // Await the result of the query function
                 "inputs": "Hello, how are you?"
             });
-			return {
-				statusCode: 200,
-				headers: headers,
-				body: JSON.stringify(data[0].generated_text)
-			};
+			return new Response(
+				JSON.stringify(data[0].generated_text), 
+				{
+					status: 200,
+					headers: new Headers(headers)
+				}
+			);
         } catch (error) {
             console.error(error);
-			return {
-				statusCode: 200,
-				headers: headers,
-				body: JSON.stringify({ error: error.message})
-    		};
+			return new Response(
+				JSON.stringify({ error: error.message})
+			);
         }
     }
 };
