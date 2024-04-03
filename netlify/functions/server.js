@@ -15,7 +15,7 @@ async function query(data) {
 	return result;
 }
 
-const server = http.createServer(async (req, res) => {
+export default async (req, res) => {
 	// Allow origin all
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
@@ -37,6 +37,4 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: error.message }));
         }
     }
-}).listen(3000, () => {
-    console.log('Server is running.');
-});
+};
