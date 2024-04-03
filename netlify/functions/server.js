@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import url from 'url';
 dotenv.config();
 
 async function query(data) {
@@ -34,10 +35,10 @@ export default async (req, res) => {
 	}
     if (req.method === 'GET') {
         try {
-			const text = req.query.input;
+			let q = url.parse(req.url, true);
             const data = await query({ // Await the result of the query function
 				// TODO: Change inputs to req.query.text
-                "inputs": text
+                "inputs": q.query.input
             });
 			return new Response(
 				JSON.stringify(data), 
