@@ -16,10 +16,16 @@ async function query(data) {
 
 export default async (req, res) => {
 	// Allow origin all
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-	res.setHeader('Content-Type', 'application/json');
+	const headers = {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Methods': 'OPTIONS, GET',
+		'Access-Control-Allow-Headers': 'Content-Type',
+		'Content-Type': 'application/json',
+	};
+	// res.setHeader('Access-Control-Allow-Origin', '*');
+	// res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+	// res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+	// res.setHeader('Content-Type', 'application/json');
 	if (req.method === 'OPTIONS') {
 		res.writeHead(200);
 		res.end();
@@ -30,10 +36,18 @@ export default async (req, res) => {
             const data = await query({ // Await the result of the query function
                 "inputs": "Hello, how are you?"
             });
-            res.end(JSON.stringify(data[0].generated_text)); // Send response after await
+			return {
+				statusCode: 200,
+				headers: headers,
+				body: JSON.stringify(data[0].generated_text)
+			};
         } catch (error) {
             console.error(error);
-            res.end(JSON.stringify({ error: error.message }));
+			return {
+				statusCode: 200,
+				headers: headers,
+				body: JSON.stringify({ error: error.message})
+    		};
         }
     }
 };
