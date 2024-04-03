@@ -34,9 +34,10 @@ export default async (req, res) => {
 	}
     if (req.method === 'GET') {
         try {
+			const text = req.query.input;
             const data = await query({ // Await the result of the query function
 				// TODO: Change inputs to req.query.text
-                "inputs": "Hello, how are you?"
+                "inputs": text
             });
 			return new Response(
 				JSON.stringify(data), 
