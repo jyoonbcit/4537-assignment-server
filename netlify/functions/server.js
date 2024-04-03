@@ -1,5 +1,4 @@
-const http = require('http');
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 dotenv.config();
 
 async function query(data) {
