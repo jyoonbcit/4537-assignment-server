@@ -72,19 +72,3 @@ async function serveStaticFile(filename, contentType) {
 		};
 	}
 }
-
-async function query(data) {
-	const response = await fetch(
-		"https://api-inference.huggingface.co/models/humarin/chatgpt_paraphraser_on_T5_base",
-		{
-			headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
-			method: "POST",
-			body: JSON.stringify(data),
-		}
-	);
-	if (!response.ok) {
-		throw new Error(`Server error: ${response.status}`);
-	}
-	const result = await response.json();
-	return result;
-}
