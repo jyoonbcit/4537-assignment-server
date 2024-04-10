@@ -1,5 +1,3 @@
-const express = require('express');
-const app = express();
 import { promises as fs } from 'fs';
 import path from 'path';
 import url from 'url';
