@@ -38,7 +38,6 @@ export async function handler(event) {
 	};
 }
 
-// The query function remains the same
 async function query(data) {
 	const response = await fetch(
 		"https://api-inference.huggingface.co/models/humarin/chatgpt_paraphraser_on_T5_base",
@@ -53,22 +52,4 @@ async function query(data) {
 	}
 	const result = await response.json();
 	return result;
-}
-
-
-async function serveStaticFile(filename, contentType) {
-	const filePath = path.join(PUBLIC_PATH, filename);
-	try {
-		const fileContents = await fs.readFile(filePath, 'utf8');
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': contentType },
-			body: fileContents,
-		};
-	} catch (error) {
-		return {
-			statusCode: 404,
-			body: JSON.stringify({ error: "The requested file was not found." }),
-		};
-	}
 }
