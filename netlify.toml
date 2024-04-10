@@ -1,9 +1,9 @@
 [[redirects]]
 from = "/openapi.json"
-to = "/public/openapi.json"
+to = "/openapi.json"
 status = 200
 
 [[redirects]]
 from = "/*"
-to = "/public/index.html"
+to = "/index.html"
 status = 200
