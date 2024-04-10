@@ -1,8 +1,10 @@
 import { promises as fs } from 'fs';
-import path from 'path';
-import url from 'url';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+import url from 'url';
+import path from 'path';
+
+dotenv.config();
 
 const PUBLIC_PATH = path.resolve(__dirname, '../../public');
 
@@ -49,7 +51,7 @@ async function query(data) {
 	return result;
 }
 
-module.default = async (req, res) => {
+export default async (req, res) => {
 	// Allow origin all
 	const headers = {
 		// TODO: Change origin to client domain
