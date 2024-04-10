@@ -1,39 +1,38 @@
-import { promises as fs } from 'fs';
-
 import dotenv from 'dotenv';
 import url from 'url';
-import path from 'path';
+// import path from 'path';
+// import { promises as fs } from 'fs';
 
 dotenv.config();
 
-const PUBLIC_PATH = path.resolve(__dirname, '../../public');
+// const PUBLIC_PATH = path.resolve(__dirname, '../../public');
 
-export async function handler(event) {
-	const requestPath = event.path;
+// export async function handler(event) {
+// 	const requestPath = event.path;
 
-	// Serve the OpenAPI spec if requested
-	if (requestPath.includes('openapi.json')) {
-		const specPath = path.join(PUBLIC_PATH, 'openapi.json');
-		try {
-			const openapiSpec = await fs.readFile(specPath, 'utf8');
-			return {
-				statusCode: 200,
-				headers: { 'Content-Type': 'application/json' },
-				body: openapiSpec,
-			};
-		} catch (error) {
-			return {
-				statusCode: 404,
-				body: JSON.stringify({ error: "The requested file was not found." }),
-			};
-		}
-	}
+// 	// Serve the OpenAPI spec if requested
+// 	if (requestPath.includes('openapi.json')) {
+// 		const specPath = path.join(PUBLIC_PATH, 'openapi.json');
+// 		try {
+// 			const openapiSpec = await fs.readFile(specPath, 'utf8');
+// 			return {
+// 				statusCode: 200,
+// 				headers: { 'Content-Type': 'application/json' },
+// 				body: openapiSpec,
+// 			};
+// 		} catch (error) {
+// 			return {
+// 				statusCode: 404,
+// 				body: JSON.stringify({ error: "The requested file was not found." }),
+// 			};
+// 		}
+// 	}
 
-	// For any other path, return 404
-	return {
-		statusCode: 404,
-		body: 'Not Found',
-	};
+// 	// For any other path, return 404
+// 	return {
+// 		statusCode: 404,
+// 		body: 'Not Found',
+// 	};
 }
 
 
