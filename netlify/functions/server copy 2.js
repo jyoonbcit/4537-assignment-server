@@ -1,46 +1,49 @@
+// Before
+// import express from 'express';
+// import dotenv from 'dotenv';
+// import url from 'url';
+
+// After
 const express = require('express');
-const app = express();
-import { promises as fs } from 'fs';
-import path from 'path';
-import url from 'url';
+const dotenv = require('dotenv');
+const url = require('url');
 
 require('dotenv').config();
 
-export async function handler(event) {
-	const requestPath = event.path;
+const app = express();
+const path = require('path');
+const fs = require('fs');
 
-	// Serve the OpenAPI spec
-	if (requestPath.includes('openapi.json')) {
-		const specPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'openapi.json');
-		const openapiSpec = await fs.readFile(specPath, 'utf8');
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'application/json' },
-			body: openapiSpec,
-		};
-	}
+// Direct paths to the index.html file and OpenAPI spec file since they're in the same directory
+const swaggerUiHtmlPath = path.join(__dirname, 'index.html');
+const openApiSpecPath = path.join(__dirname, 'openapi.json');
 
-	// Serve the modified index.html for Swagger UI
-	if (requestPath === '/' || requestPath.includes('index.html')) {
-		const htmlPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'index.html');
-		let indexHtml = await fs.readFile(htmlPath, 'utf8');
-		indexHtml = indexHtml.replace(
+// Serve your OpenAPI spec file
+app.get('/openapi.json', (req, res) => {
+	res.sendFile(openApiSpecPath);
+});
+
+// Serve the modified index.html from Swagger UI that uses your OpenAPI spec
+app.get('/', (req, res) => {
+	fs.readFile(swaggerUiHtmlPath, 'utf8', (err, data) => {
+		if (err) {
+			console.error('Error reading Swagger UI index.html:', err);
+			return res.status(500).send('Error loading documentation');
+		}
+		// Replace the URL placeholder with the actual path to the OpenAPI spec
+		const result = data.replace(
 			'url: "https://petstore.swagger.io/v2/swagger.json"',
-			'url: "/openapi.json"',
+			'url: "/openapi.json"'
 		);
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'text/html' },
-			body: indexHtml,
-		};
-	}
+		res.send(result);
+	});
+});
+// Correcting the server start-up process
+const port = process.env.PORT || 4000; // Make sure the port matches everywhere
+app.listen(port, () => {
+	console.log(`Server is running on http://localhost:${port}`);
+});
 
-	// Default response for any other request
-	return {
-		statusCode: 404,
-		body: 'Not Found',
-	};
-}
 
 async function query(data) {
 	const response = await fetch(

@@ -1,46 +1,35 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-import { promises as fs } from 'fs';
-import path from 'path';
-import url from 'url';
+const path = require('path');
+const fs = require('fs');
 
-require('dotenv').config();
+// Path to the index.html file
+const swaggerUiHtmlPath = path.join(__dirname, 'index.html');
+// Path to your OpenAPI spec file
+const openApiSpecPath = path.join(__dirname, 'openapi.json'); // Adjusted path
 
-export async function handler(event) {
-	const requestPath = event.path;
+// Serve your OpenAPI spec file
+app.get('/openapi.json', (req, res) => {
+	res.sendFile(openApiSpecPath);
+});
 
-	// Serve the OpenAPI spec
-	if (requestPath.includes('openapi.json')) {
-		const specPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'openapi.json');
-		const openapiSpec = await fs.readFile(specPath, 'utf8');
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'application/json' },
-			body: openapiSpec,
-		};
-	}
-
-	// Serve the modified index.html for Swagger UI
-	if (requestPath === '/' || requestPath.includes('index.html')) {
-		const htmlPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'index.html');
-		let indexHtml = await fs.readFile(htmlPath, 'utf8');
-		indexHtml = indexHtml.replace(
+// Serve the modified index.html from Swagger UI that uses your OpenAPI spec
+app.get('/', (req, res) => {
+	fs.readFile(swaggerUiHtmlPath, 'utf8', (err, data) => {
+		if (err) {
+			console.error('Error reading Swagger UI index.html:', err);
+			return res.status(500).send('Error loading documentation');
+		}
+		// Replace the URL placeholder with the actual path to the OpenAPI spec
+		const result = data.replace(
 			'url: "https://petstore.swagger.io/v2/swagger.json"',
-			'url: "/openapi.json"',
+			'url: "/openapi.json"'
 		);
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'text/html' },
-			body: indexHtml,
-		};
-	}
+		res.send(result);
+	});
+});
 
-	// Default response for any other request
-	return {
-		statusCode: 404,
-		body: 'Not Found',
-	};
-}
 
 async function query(data) {
 	const response = await fetch(
@@ -55,7 +44,7 @@ async function query(data) {
 	return result;
 }
 
-module.default = async (req, res) => {
+export default async (req, res) => {
 	// Allow origin all
 	const headers = {
 		// TODO: Change origin to client domain
@@ -95,3 +84,7 @@ module.default = async (req, res) => {
 		}
 	}
 };
+
+app.listen(3000, () => {
+	console.log('API documentation available at http://localhost:3000');
+});
