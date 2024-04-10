@@ -1,4 +1,16 @@
 {
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Paraphraser API",
+    "description": "API for managing user authentication, roles, and profiles, including signup, login, logout, and role updates. For our Paraphraser app.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://kind-ruby-python-boot.cyclic.app/",
+      "description": "Development server"
+    }
+  ],
   "paths": {
     "/signup": {
       "post": {
@@ -175,16 +187,5 @@
         }
       }
     }
-  },
-  "info": {
-    "title": "Paraphraser API",
-    "description": "API for managing user authentication, roles, and profiles, including signup, login, logout, and role updates. For our Paraphraser app.",
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "https://kind-ruby-python-boot.cyclic.app/",
-      "description": "Development server"
-    }
-  ]
+  }
 }
