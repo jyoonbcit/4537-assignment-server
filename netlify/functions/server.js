@@ -6,11 +6,23 @@ import fetch from 'node-fetch'; // Ensure you have node-fetch installed
 
 dotenv.config();
 
+
 export async function handler(event) {
 	const requestPath = event.path;
 
+	// Serve the OpenAPI spec if requested
+	if (requestPath.endsWith('openapi.json')) {
+		return serveStaticFile('openapi.json', 'application/json');
+	}
+
+	// Serve the index.html (Swagger UI) if the root is requested
+	if (requestPath === '/' || requestPath.endsWith('index.html')) {
+		return serveStaticFile('index.html', 'text/html');
+	}
+
 	// Handle API requests for querying the model
 	if (requestPath.startsWith('/api')) {
+		// Parse the query parameters
 		const queryParams = url.parse(event.rawUrl).query;
 		const queryObject = new url.URLSearchParams(queryParams);
 		const inputs = queryObject.get('input'); // Assuming 'input' is the query param
