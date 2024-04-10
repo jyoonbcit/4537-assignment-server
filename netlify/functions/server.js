@@ -7,40 +7,36 @@ import url from 'url';
 require('dotenv').config();
 
 export async function handler(event) {
+	// Assuming you want to serve the OpenAPI spec through the function for some reason
 	const requestPath = event.path;
 
-	// Serve the OpenAPI spec
+	// Only handle the path that includes 'openapi.json', otherwise return a 404.
 	if (requestPath.includes('openapi.json')) {
-		const specPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'openapi.json');
-		const openapiSpec = await fs.readFile(specPath, 'utf8');
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'application/json' },
-			body: openapiSpec,
-		};
+		// Now the path should be relative to the root of your project
+		const specPath = path.join('./public/openapi.json');
+		try {
+			const openapiSpec = await fs.readFile(specPath, 'utf8');
+			return {
+				statusCode: 200,
+				headers: { 'Content-Type': 'application/json' },
+				body: openapiSpec,
+			};
+		} catch (error) {
+			// File not found or some other error
+			return {
+				statusCode: 404,
+				body: JSON.stringify({ error: "The requested file was not found." }),
+			};
+		}
 	}
 
-	// Serve the modified index.html for Swagger UI
-	if (requestPath === '/' || requestPath.includes('index.html')) {
-		const htmlPath = path.join(process.env.LAMBDA_TASK_ROOT, '..', 'public', 'index.html');
-		let indexHtml = await fs.readFile(htmlPath, 'utf8');
-		indexHtml = indexHtml.replace(
-			'url: "https://petstore.swagger.io/v2/swagger.json"',
-			'url: "/openapi.json"',
-		);
-		return {
-			statusCode: 200,
-			headers: { 'Content-Type': 'text/html' },
-			body: indexHtml,
-		};
-	}
-
-	// Default response for any other request
+	// If the request is not for 'openapi.json', return a 404 directly.
 	return {
 		statusCode: 404,
 		body: 'Not Found',
 	};
 }
+
 
 async function query(data) {
 	const response = await fetch(
