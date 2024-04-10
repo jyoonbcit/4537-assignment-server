@@ -6,14 +6,14 @@ import url from 'url';
 
 require('dotenv').config();
 
+const PUBLIC_PATH = path.resolve(__dirname, '../../public');
+
 export async function handler(event) {
-	// Assuming you want to serve the OpenAPI spec through the function for some reason
 	const requestPath = event.path;
 
-	// Only handle the path that includes 'openapi.json', otherwise return a 404.
+	// Serve the OpenAPI spec if requested
 	if (requestPath.includes('openapi.json')) {
-		// Now the path should be relative to the root of your project
-		const specPath = path.join('./public/openapi.json');
+		const specPath = path.join(PUBLIC_PATH, 'openapi.json');
 		try {
 			const openapiSpec = await fs.readFile(specPath, 'utf8');
 			return {
@@ -22,7 +22,6 @@ export async function handler(event) {
 				body: openapiSpec,
 			};
 		} catch (error) {
-			// File not found or some other error
 			return {
 				statusCode: 404,
 				body: JSON.stringify({ error: "The requested file was not found." }),
@@ -30,12 +29,13 @@ export async function handler(event) {
 		}
 	}
 
-	// If the request is not for 'openapi.json', return a 404 directly.
+	// For any other path, return 404
 	return {
 		statusCode: 404,
 		body: 'Not Found',
 	};
 }
+
 
 
 async function query(data) {
