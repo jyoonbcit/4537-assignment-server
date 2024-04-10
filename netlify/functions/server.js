@@ -1,6 +1,25 @@
 import dotenv from 'dotenv';
 import url from 'url';
+import express from 'express';
+import path from 'path';
+
 dotenv.config();
+
+const app = express();
+
+// Define a route to render index.html
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Serve static files from the public directory
+// app.use(express.static(path.join(__dirname, 'public')));
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+	console.log(`Server is running on port ${PORT}`);
+});
 
 async function query(data) {
 	const response = await fetch(
